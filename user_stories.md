@@ -18,6 +18,10 @@ As a developer I want to display the results of the survey at the end of the 25 
 
 As a designer I want to ensure a level of quality in my design work so that users can be attracted to my brand and company.
 
+As a developer, I want to keep track of how many times an image is shown to have the data available for the marketing team.
+
+As a developer, I want to build objects to store all data for my client's products.
+
 As a focus group user I want to be able to easilly understand the UI of the website so I can focus on making selections.
 
 As a focus group user, I want to be able to see my progress in the survey so that I'm aware of how much progress I have left.
