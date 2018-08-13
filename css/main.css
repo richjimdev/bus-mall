@@ -1,0 +1,8 @@
+img {
+  max-width: 250px;
+  padding: 20px;
+}
+
+.image-shown {
+  float: left;
+}
