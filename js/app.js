@@ -1,6 +1,7 @@
 'use strict';
 console.log('js linked');
 
+//Constructor for products
 function Product(name, filename, shortName) {
   this.name = name;
   this.filename = filename;
@@ -10,14 +11,13 @@ function Product(name, filename, shortName) {
   Product.allProducts.push(this);
 }
 
+//array to place all products in
 Product.allProducts = [];
 
+//creating first three and all remaining products using constructor
 var product1 = new Product('"Coolest Kid in Class" R2D2 Bag', 'img/bag.jpg', 'R2D2 Bag');
 var product2 = new Product('Banana and Finger Slicer', 'img/banana.jpg', 'Banana Slicer');
 var product3 = new Product('\'Murica Stand', 'img/bathroom.jpg', 'iPad Stand');
-product1.shown = 1;
-product2.shown = 1;
-product3.shown = 1;
 new Product('Kinda Useless Rain Boots', 'img/boots.jpg', 'Boots');
 new Product('Ultimate Breakfast Machine', 'img/breakfast.jpg', 'Breakfast Machine');
 new Product('Gum flavored... Meatball Gum?', 'img/bubblegum.jpg', 'Meatball Gum');
@@ -36,15 +36,24 @@ new Product('Questionable Tentacle USB Drive', 'img/usb.gif', 'Tentacle USB');
 new Product('Completely Useless Non-Watering Can', 'img/water-can.jpg', 'Watering Can');
 new Product('"Why?"ne Glass', 'img/wine-glass.jpg', 'Wine Glass');
 
+//giving initial products a base "shown" value
+product1.shown = 1;
+product2.shown = 1;
+product3.shown = 1;
+
+//setting number generator for inital 3 products
 var numGen1 = 0;
 var numGen2 = 1;
 var numGen3 = 2;
-var rng = [];
+
+//starting votes at 0
 var votes = 0;
 
+//creating elements for final results, that will be appended later
 var resultsElm = document.getElementById('showResults');
 var totalVotes = document.getElementById('numOfVotes');
 
+//function to return a percentage (so that diving 0/0 doesnt break everything)
 function percentReturn(shown, votes) {
   var percent = (votes / shown) * 100;
   if (isNaN(percent)) {
@@ -54,19 +63,23 @@ function percentReturn(shown, votes) {
   }
 }
 
+//big heavy function to run all new images and the results
 function showNewProducts() {
-  var rng = [numGen1, numGen2, numGen3];
+  var rng = [numGen1, numGen2, numGen3]; //stores the index number of the previous shown image (to prevent repeats later)
+  //if all votes are done, this creates final results elements
   if (votes >= 24) {
+    //this will remove current elements to allow final elements to show
     img1.parentNode.removeChild(img1);
     img2.parentNode.removeChild(img2);
     img3.parentNode.removeChild(img3);
     title1.parentNode.removeChild(title1);
     title2.parentNode.removeChild(title2);
     title3.parentNode.removeChild(title3);
-    totalVotes.innerText = votes + 1;
+    totalVotes.innerText = votes + 1; //I did this to show 25/25 at end (didn't know how else to fix)
     var results = document.createElement('h1');
     results.innerText = 'Results';
     resultsElm.appendChild(results);
+    //this loop is what actually creates the final results elements
     for (var i = 0; i < Product.allProducts.length; i++) {
       var picForFinal = document.createElement('img');
       picForFinal.src = Product.allProducts[i].filename;
@@ -77,20 +90,21 @@ function showNewProducts() {
       eachResult.innerText = `${Product.allProducts[i].shortName}'s total votes: ${compVotes}. Times shown: ${shown}. Pick rate ${percentReturn(shown, compVotes)}%`;
       resultsElm.appendChild(eachResult);
     }
-
+  // if votes are less than 10, the function will continue to show new images
   } else {
-    do {
+    do { //create random number for the three images
       var randomIndex = Math.floor(Math.random() * Product.allProducts.length);
       var randomIndex2 = Math.floor(Math.random() * Product.allProducts.length);
       var randomIndex3 = Math.floor(Math.random() * Product.allProducts.length);
-
-    } while (rng.includes(randomIndex) ||
+      // while loop, that prevents same and repeated images to be used
+    } while (rng.includes(randomIndex) || //using the previous array to prevent repeated images
       rng.includes(randomIndex2) ||
       rng.includes (randomIndex3) ||
       randomIndex === randomIndex2 ||
       randomIndex === randomIndex3 ||
       randomIndex2 === randomIndex3);
 
+    //adds to the current product's shown count, and replaces the product that will be shown on screen, using the rng
     product1 = Product.allProducts[randomIndex];
     product1.shown++;
     product2 = Product.allProducts[randomIndex2];
@@ -98,52 +112,54 @@ function showNewProducts() {
     product3 = Product.allProducts[randomIndex3];
     product3.shown++;
 
-    // change img src on the page to match the 2 new products
+    // change img src on the page to match the 3 new products
     img1.src = product1.filename;
     img2.src = product2.filename;
     img3.src = product3.filename;
 
+    //same idea, but for the names above the images
     title1.innerText = product1.name;
     title2.innerText = product2.name;
     title3.innerText = product3.name;
 
+    //stores the rng into a variable (to prevent repeats)
     numGen1 = randomIndex;
     numGen2 = randomIndex2;
     numGen3 = randomIndex3;
 
+    //adds to the total votes
     votes++;
     totalVotes.innerText = votes;
   }
 }
 
-// event listeners
+// created notes on the images to attach event listeners
 var img1 = document.getElementsByTagName('img')[0];
 var img2 = document.getElementsByTagName('img')[1];
 var img3 = document.getElementsByTagName('img')[2];
 
+// create notes for the titles that will change dynamically when the function is called
 var title1 = document.getElementById('picTitle1');
 var title2 = document.getElementById('picTitle2');
 var title3 = document.getElementById('picTitle3');
 
-// what are we listening for? click
+// actual event listeners on images
 img1.addEventListener('click', function() {
-  // add to votes for that goat
+  // add votes for this image
   product1.votes++;
   showNewProducts();
   console.log('First image clicked');
 });
 
 img2.addEventListener('click', function() {
-  // what should we do?
-  // add to votes for that goat
+  // add votes for this image
   product2.votes++;
   showNewProducts();
   console.log('Second image clicked');
 });
 
 img3.addEventListener('click', function() {
-  // what should we do?
-  // add to votes for that goat
+  // add votes for this image
   product3.votes++;
   showNewProducts();
   console.log('Third image clicked');
