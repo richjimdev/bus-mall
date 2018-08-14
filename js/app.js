@@ -10,23 +10,22 @@ function Product(name, filename) {
 }
 
 Product.allProducts = [];
-var rng = [0, 1, 2];
 
 var product1 = new Product('"Coolest Kid in Class" R2D2 Bag', 'img/bag.jpg');
-var product2 = new Product('Banana Slicer', 'img/banana.jpg');
-var product3 = new Product('"Why is this a thing?" Stand', 'img/bathroom.jpg');
+var product2 = new Product('Banana and Finger Slicer', 'img/banana.jpg');
+var product3 = new Product('\'Murica Stand', 'img/bathroom.jpg');
 product1.shown = 1;
 product2.shown = 1;
 product3.shown = 1;
 new Product('Kinda Useless Rain Boots', 'img/boots.jpg');
 new Product('Ultimate Breakfast Machine', 'img/breakfast.jpg');
 new Product('Gum flavored... Meatball Gum?', 'img/bubblegum.jpg');
-new Product('Uncomfortable Chair', 'img/chair.jpg');
+new Product('Very Uncomfortable Chair', 'img/chair.jpg');
 new Product('Ct̝͓̮̺̼̯͘h̨u̪͖̭̰̮̲ͅl҉̝h̺̞̠͓͇͈u̖̩̰̬͇̻ ̛͉̲̟A̭͎̥̲͠ͅw̭̯̪̩̭̤͟a̫͇͡i̢t̖̼̯̥̖̫̮s͕', 'img/cthulhu.jpg');
 new Product('Cruel Torture Device', 'img/dog-duck.jpg');
-new Product('"Harcore Game of Thrones" Fan Food', 'img/dragon.jpg');
+new Product('"Harcore Game of Thrones Fan" Food', 'img/dragon.jpg');
 new Product('"Ink-in-your-food" Utencil Attachments', 'img/pen.jpg');
-new Product('"Doens\'t work if your dog\'s lazy" Sweeper', 'img/pet-sweep.jpg');
+new Product('"Doens\'t work if your dog is lazy" Sweeper', 'img/pet-sweep.jpg');
 new Product('"Because Why Not?" Pizza Scissors', 'img/scissors.jpg');
 new Product('"End my suffering" Shark Sleeping Bag', 'img/shark.jpg');
 new Product('"I\'m a terrible parent" Starter Pack', 'img/sweep.png');
@@ -39,23 +38,21 @@ new Product('"Why?"ne Glass', 'img/wine-glass.jpg');
 var numGen1 = 0;
 var numGen2 = 1;
 var numGen3 = 2;
+var rng = [];
+var votes = 0;
+
+var totalVotes = document.getElementById('numOfVotes');
 
 function showNewProducts() {
+  var rng = [numGen1, numGen2, numGen3];
   do {
     var randomIndex = Math.floor(Math.random() * Product.allProducts.length);
     var randomIndex2 = Math.floor(Math.random() * Product.allProducts.length);
     var randomIndex3 = Math.floor(Math.random() * Product.allProducts.length);
 
-  } while (
-    numGen1 === randomIndex ||
-    numGen1 === randomIndex2 ||
-    numGen1 === randomIndex3 ||
-    numGen2 === randomIndex ||
-    numGen2 === randomIndex2 ||
-    numGen2 === randomIndex3 ||
-    numGen3 === randomIndex ||
-    numGen3 === randomIndex2 ||
-    numGen3 === randomIndex3 ||
+  } while ( rng.includes(randomIndex) ||
+    rng.includes(randomIndex2) ||
+    rng.includes (randomIndex3) ||
     randomIndex === randomIndex2 ||
     randomIndex === randomIndex3 ||
     randomIndex2 === randomIndex3);
@@ -79,6 +76,9 @@ function showNewProducts() {
   numGen1 = randomIndex;
   numGen2 = randomIndex2;
   numGen3 = randomIndex3;
+
+  votes++;
+  totalVotes.innerText = votes;
 }
 
 // event listeners
