@@ -9,9 +9,11 @@ function Product(name, filename, shortName) {
   this.votes = 0;
   this.shown = 0;
   Product.allProducts.push(this);
-  this.color = randColor;
+  // this.color = randColor;
+  Product.allColors.push(randColor());
 }
 
+//assigning a random color to each Product
 function randColor() {
   var r = Math.floor(Math.random() * (255 - 0 + 1) ) + 0;
   var g = Math.floor(Math.random() * (255 - 0 + 1) ) + 0;
@@ -22,6 +24,7 @@ function randColor() {
 var resultsElm = document.getElementById('showResults');
 var totalVotes = document.getElementById('numOfVotes');
 
+Product.allColors = [];
 Product.allProducts = []; //array to place all products in
 Product.allVotes = -1; // keeps total votes in the object
 
@@ -64,11 +67,6 @@ new Product('Questionable Tentacle USB Drive', 'img/usb.gif', 'Tentacle USB');
 new Product('Completely Useless Non-Watering Can', 'img/water-can.jpg', 'Watering Can');
 new Product('"Why?"ne Glass', 'img/wine-glass.jpg', 'Wine Glass');
 
-// //giving initial products a base "shown" value
-// product1.shown = 1;
-// product2.shown = 1;
-// product3.shown = 1;
-
 //setting number generator for inital 3 products
 var numGen1 = -1;
 var numGen2 = -1;
@@ -105,28 +103,23 @@ function renderResults() {
     // also add numbers to the new array
     namesArray.push(Product.allProducts[i].shortName);
     votesArray.push(Product.allProducts[i].votes);
-    shownArray.push(Product.allProducts[i].votes);
+    shownArray.push(Product.allProducts[i].shown);
     colorsArray.push(Product.allProducts[i].color);
   }
 
   var ctx = document.getElementById('votesChart').getContext('2d');
+  var ctx2 = document.getElementById('shownChart').getContext('2d');
+
   var myChart = new Chart(ctx, {
-    type: 'bar',
+    type: 'horizontalBar',
     data: {
       labels: namesArray,
       datasets: [{
-        label: '# of Votes',
+        label: 'Total Votes',
         data: votesArray,
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
-        ],
+        backgroundColor: Product.allColors,
         borderColor: 'rgb(0,0,0)',
-        borderWidth: 1
+        borderWidth: 1,
       }]
     },
     options: {
@@ -134,17 +127,30 @@ function renderResults() {
         xAxes: [{
           ticks: {
             beginAtZero:true,
-            max: 15,
+            suggestedMax: 10,
             autoSkip: false
-          }
-        }]
+          },
+        }
+        ]
       }
     }
   });
-  
-  // for (var i = 0; i < Product.allProducts.length; i++) {
-  //   Product.allProducts[i].finalize();
-  // }
+  var myPieChart = new Chart(ctx2,{
+    type: 'pie',
+    // The data for our dataset
+    data: {
+      labels: namesArray,
+      datasets: [{
+        label: 'Times Shown',
+        backgroundColor: Product.allColors,
+        borderColor: 'rgb(0,0,0)',
+        data: shownArray,
+      }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
 }
 
 //big heavy function to run all new images and the results
