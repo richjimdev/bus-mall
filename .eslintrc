@@ -10,7 +10,6 @@
       "default-case":"warn",
       "camelcase":"error",
       "new-cap":"error",
-      "no-console":"warn",
       "no-empty-function":"warn",
       "no-redeclare":"error",
       "no-unused-vars":"error",

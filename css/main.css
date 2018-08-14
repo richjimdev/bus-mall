@@ -32,7 +32,7 @@ img {
   text-align: center;
 }
 
-img:hover {
+div.image-shown img:hover {
   opacity: .5;
   cursor: pointer;
 }
