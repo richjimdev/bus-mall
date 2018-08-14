@@ -11,13 +11,34 @@ function Product(name, filename, shortName) {
   Product.allProducts.push(this);
 }
 
-//array to place all products in
-Product.allProducts = [];
+//creating nodes for final results, that will be appended later
+var resultsElm = document.getElementById('showResults');
+var totalVotes = document.getElementById('numOfVotes');
 
-//creating first three and all remaining products using constructor
-var product1 = new Product('"Coolest Kid in Class" R2D2 Bag', 'img/bag.jpg', 'R2D2 Bag');
-var product2 = new Product('Banana and Finger Slicer', 'img/banana.jpg', 'Banana Slicer');
-var product3 = new Product('\'Murica Stand', 'img/bathroom.jpg', 'iPad Stand');
+Product.allProducts = []; //array to place all products in
+Product.allVotes = 0; // keeps total votes in the object
+
+//initial product variables
+var product1;
+var product2;
+var product3;
+
+//method to print results
+Product.prototype.finalize = function () {
+  var picForFinal = document.createElement('img');
+  picForFinal.src = this.filename;
+  resultsElm.appendChild(picForFinal);
+  var eachResult = document.createElement('h3');
+  var compVotes = this.votes;
+  var shown = this.shown;
+  eachResult.innerText = `${this.shortName}'s total votes: ${compVotes}. Times shown: ${shown}. Pick rate ${percentReturn(shown, compVotes)}%`;
+  resultsElm.appendChild(eachResult);
+};
+
+//creating all products using constructor
+new Product('"Coolest Kid in Class" R2D2 Bag', 'img/bag.jpg', 'R2D2 Bag');
+new Product('Banana and Finger Slicer', 'img/banana.jpg', 'Banana Slicer');
+new Product('\'Murica Stand', 'img/bathroom.jpg', 'iPad Stand');
 new Product('Kinda Useless Rain Boots', 'img/boots.jpg', 'Boots');
 new Product('Ultimate Breakfast Machine', 'img/breakfast.jpg', 'Breakfast Machine');
 new Product('Gum flavored... Meatball Gum?', 'img/bubblegum.jpg', 'Meatball Gum');
@@ -36,22 +57,15 @@ new Product('Questionable Tentacle USB Drive', 'img/usb.gif', 'Tentacle USB');
 new Product('Completely Useless Non-Watering Can', 'img/water-can.jpg', 'Watering Can');
 new Product('"Why?"ne Glass', 'img/wine-glass.jpg', 'Wine Glass');
 
-//giving initial products a base "shown" value
-product1.shown = 1;
-product2.shown = 1;
-product3.shown = 1;
+// //giving initial products a base "shown" value
+// product1.shown = 1;
+// product2.shown = 1;
+// product3.shown = 1;
 
 //setting number generator for inital 3 products
-var numGen1 = 0;
-var numGen2 = 1;
-var numGen3 = 2;
-
-//starting votes at 0
-var votes = 0;
-
-//creating elements for final results, that will be appended later
-var resultsElm = document.getElementById('showResults');
-var totalVotes = document.getElementById('numOfVotes');
+var numGen1 = -1;
+var numGen2 = -1;
+var numGen3 = -1;
 
 //function to return a percentage (so that diving 0/0 doesnt break everything)
 function percentReturn(shown, votes) {
@@ -66,31 +80,22 @@ function percentReturn(shown, votes) {
 //big heavy function to run all new images and the results
 function showNewProducts() {
   var rng = [numGen1, numGen2, numGen3]; //stores the index number of the previous shown image (to prevent repeats later)
-  //if all votes are done, this creates final results elements
-  if (votes >= 24) {
+  if (Product.allVotes >= 24) {
     //this will remove current elements to allow final elements to show
-    img1.parentNode.removeChild(img1);
-    img2.parentNode.removeChild(img2);
-    img3.parentNode.removeChild(img3);
-    title1.parentNode.removeChild(title1);
-    title2.parentNode.removeChild(title2);
-    title3.parentNode.removeChild(title3);
-    totalVotes.innerText = votes + 1; //I did this to show 25/25 at end (didn't know how else to fix)
-    var results = document.createElement('h1');
+    img1.remove();
+    img2.remove();
+    img3.remove();
+    title1.remove();
+    title2.remove();
+    title3.remove();
+    totalVotes.innerText = Product.allVotes + 1; //I did this to show 25/25 at end
+    var results = document.getElementById('topTitle');
     results.innerText = 'Results';
-    resultsElm.appendChild(results);
     //this loop is what actually creates the final results elements
     for (var i = 0; i < Product.allProducts.length; i++) {
-      var picForFinal = document.createElement('img');
-      picForFinal.src = Product.allProducts[i].filename;
-      resultsElm.appendChild(picForFinal);
-      var eachResult = document.createElement('h3');
-      var compVotes = Product.allProducts[i].votes;
-      var shown = Product.allProducts[i].shown;
-      eachResult.innerText = `${Product.allProducts[i].shortName}'s total votes: ${compVotes}. Times shown: ${shown}. Pick rate ${percentReturn(shown, compVotes)}%`;
-      resultsElm.appendChild(eachResult);
+      Product.allProducts[i].finalize();
     }
-  // if votes are less than 10, the function will continue to show new images
+  // if votes are less, the function will continue to show new images
   } else {
     do { //create random number for the three images
       var randomIndex = Math.floor(Math.random() * Product.allProducts.length);
@@ -128,8 +133,8 @@ function showNewProducts() {
     numGen3 = randomIndex3;
 
     //adds to the total votes
-    votes++;
-    totalVotes.innerText = votes;
+    Product.allVotes++;
+    totalVotes.innerText = Product.allVotes;
   }
 }
 
@@ -164,3 +169,5 @@ img3.addEventListener('click', function() {
   showNewProducts();
   console.log('Third image clicked');
 });
+
+showNewProducts();
