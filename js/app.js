@@ -9,14 +9,21 @@ function Product(name, filename, shortName) {
   this.votes = 0;
   this.shown = 0;
   Product.allProducts.push(this);
+  this.color = randColor;
 }
 
+function randColor() {
+  var r = Math.floor(Math.random() * (255 - 0 + 1) ) + 0;
+  var g = Math.floor(Math.random() * (255 - 0 + 1) ) + 0;
+  var b = Math.floor(Math.random() * (255 - 0 + 1) ) + 0;
+  return `rgba(${r},${g},${b},0.2)`;
+}
 //creating nodes for final results, that will be appended later
 var resultsElm = document.getElementById('showResults');
 var totalVotes = document.getElementById('numOfVotes');
 
 Product.allProducts = []; //array to place all products in
-Product.allVotes = 0; // keeps total votes in the object
+Product.allVotes = -1; // keeps total votes in the object
 
 //initial product variables
 var product1;
@@ -77,24 +84,74 @@ function percentReturn(shown, votes) {
   }
 }
 
+function renderResults() {
+  //this will remove current elements to allow final elements to show
+  img1.remove();
+  img2.remove();
+  img3.remove();
+  title1.remove();
+  title2.remove();
+  title3.remove();
+  totalVotes.innerText = Product.allVotes + 1; //I did this to show 25/25 at end
+  var results = document.getElementById('topTitle');
+  results.innerText = 'Results';
+  //this loop is what actually creates the final results elements
+  var namesArray = [];
+  var votesArray = [];
+  var shownArray = [];
+  var colorsArray = [];
+
+  for (var i = 0; i < Product.allProducts.length; i++) {
+    // also add numbers to the new array
+    namesArray.push(Product.allProducts[i].shortName);
+    votesArray.push(Product.allProducts[i].votes);
+    shownArray.push(Product.allProducts[i].votes);
+    colorsArray.push(Product.allProducts[i].color);
+  }
+
+  var ctx = document.getElementById('votesChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: namesArray,
+      datasets: [{
+        label: '# of Votes',
+        data: votesArray,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: 'rgb(0,0,0)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          ticks: {
+            beginAtZero:true,
+            max: 15,
+            autoSkip: false
+          }
+        }]
+      }
+    }
+  });
+  
+  // for (var i = 0; i < Product.allProducts.length; i++) {
+  //   Product.allProducts[i].finalize();
+  // }
+}
+
 //big heavy function to run all new images and the results
 function showNewProducts() {
   var rng = [numGen1, numGen2, numGen3]; //stores the index number of the previous shown image (to prevent repeats later)
   if (Product.allVotes >= 24) {
-    //this will remove current elements to allow final elements to show
-    img1.remove();
-    img2.remove();
-    img3.remove();
-    title1.remove();
-    title2.remove();
-    title3.remove();
-    totalVotes.innerText = Product.allVotes + 1; //I did this to show 25/25 at end
-    var results = document.getElementById('topTitle');
-    results.innerText = 'Results';
-    //this loop is what actually creates the final results elements
-    for (var i = 0; i < Product.allProducts.length; i++) {
-      Product.allProducts[i].finalize();
-    }
+    renderResults();
   // if votes are less, the function will continue to show new images
   } else {
     do { //create random number for the three images
