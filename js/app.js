@@ -2,14 +2,13 @@
 console.log('js linked');
 
 //Constructor for products
-function Product(name, filename, shortName) {
+function Product(name, filename, shortName, votes = 0, shown = 0) {
   this.name = name;
   this.filename = filename;
   this.shortName = shortName;
-  this.votes = 0;
-  this.shown = 0;
+  this.votes = votes;
+  this.shown = shown;
   Product.allProducts.push(this);
-  // this.color = randColor;
   Product.allColors.push(randColor());
 }
 
@@ -46,26 +45,33 @@ Product.prototype.finalize = function () {
 };
 
 //creating all products using constructor
-new Product('"Coolest Kid in Class" R2D2 Bag', 'img/bag.jpg', 'R2D2 Bag');
-new Product('Banana and Finger Slicer', 'img/banana.jpg', 'Banana Slicer');
-new Product('\'Murica Stand', 'img/bathroom.jpg', 'iPad Stand');
-new Product('Kinda Useless Rain Boots', 'img/boots.jpg', 'Boots');
-new Product('Ultimate Breakfast Machine', 'img/breakfast.jpg', 'Breakfast Machine');
-new Product('Gum flavored... Meatball Gum?', 'img/bubblegum.jpg', 'Meatball Gum');
-new Product('Very Uncomfortable Chair', 'img/chair.jpg', 'Chair');
-new Product('Ct̝͓̮̺̼̯͘h̨u̪͖̭̰̮̲ͅl҉̝h̺̞̠͓͇͈u̖̩̰̬͇̻ ̛͉̲̟A̭͎̥̲͠ͅw̭̯̪̩̭̤͟a̫͇͡i̢t̖̼̯̥̖̫̮s͕', 'img/cthulhu.jpg', 'Cthulhu');
-new Product('Cruel Torture Device', 'img/dog-duck.jpg', 'Duck Lips');
-new Product('"Harcore Game of Thrones Fan" Food', 'img/dragon.jpg', 'Dragon Meat');
-new Product('"Ink-in-your-food" Utencil Attachments', 'img/pen.jpg', 'Pen Utencils');
-new Product('"Doens\'t work if your dog is lazy" Sweeper', 'img/pet-sweep.jpg', 'Pet Sweeper');
-new Product('"Because Why Not?" Pizza Scissors', 'img/scissors.jpg', 'Pizza Sissors');
-new Product('"End my suffering" Shark Sleeping Bag', 'img/shark.jpg', 'Sark Sleeping Bag');
-new Product('"I\'m a terrible parent" Starter Pack', 'img/sweep.png', 'Baby Sweeper');
-new Product('"Better than the real thing" Sleeping Bag', 'img/tauntaun.jpg', 'Tauntaun Sleeping Bag');
-new Product('"Special" Spam', 'img/unicorn.jpg', 'Unicorn Meat');
-new Product('Questionable Tentacle USB Drive', 'img/usb.gif', 'Tentacle USB');
-new Product('Completely Useless Non-Watering Can', 'img/water-can.jpg', 'Watering Can');
-new Product('"Why?"ne Glass', 'img/wine-glass.jpg', 'Wine Glass');
+var productsAreSaved = JSON.parse(localStorage.getItem('products'));
+if (productsAreSaved) {
+  for (var i = 0; i < productsAreSaved.length; i++) {
+    new Product(productsAreSaved[i].name, productsAreSaved[i].filename, productsAreSaved[i].shortName, productsAreSaved[i].votes, productsAreSaved[i].shown);
+  }
+} else {
+  new Product('"Coolest Kid in Class" R2D2 Bag', 'img/bag.jpg', 'R2D2 Bag');
+  new Product('Banana and Finger Slicer', 'img/banana.jpg', 'Banana Slicer');
+  new Product('\'Murica Stand', 'img/bathroom.jpg', 'iPad Stand');
+  new Product('Kinda Useless Rain Boots', 'img/boots.jpg', 'Boots');
+  new Product('Ultimate Breakfast Machine', 'img/breakfast.jpg', 'Breakfast Machine');
+  new Product('Gum flavored... Meatball Gum?', 'img/bubblegum.jpg', 'Meatball Gum');
+  new Product('Very Uncomfortable Chair', 'img/chair.jpg', 'Chair');
+  new Product('Ct̝͓̮̺̼̯͘h̨u̪͖̭̰̮̲ͅl҉̝h̺̞̠͓͇͈u̖̩̰̬͇̻ ̛͉̲̟A̭͎̥̲͠ͅw̭̯̪̩̭̤͟a̫͇͡i̢t̖̼̯̥̖̫̮s͕', 'img/cthulhu.jpg', 'Cthulhu');
+  new Product('Cruel Torture Device', 'img/dog-duck.jpg', 'Duck Lips');
+  new Product('"Harcore Game of Thrones Fan" Food', 'img/dragon.jpg', 'Dragon Meat');
+  new Product('"Ink-in-your-food" Utencil Attachments', 'img/pen.jpg', 'Pen Utencils');
+  new Product('"Doens\'t work if your dog is lazy" Sweeper', 'img/pet-sweep.jpg', 'Pet Sweeper');
+  new Product('"Because Why Not?" Pizza Scissors', 'img/scissors.jpg', 'Pizza Sissors');
+  new Product('"End my suffering" Shark Sleeping Bag', 'img/shark.jpg', 'Sark Sleeping Bag');
+  new Product('"I\'m a terrible parent" Starter Pack', 'img/sweep.png', 'Baby Sweeper');
+  new Product('"Better than the real thing" Sleeping Bag', 'img/tauntaun.jpg', 'Tauntaun Sleeping Bag');
+  new Product('"Special" Spam', 'img/unicorn.jpg', 'Unicorn Meat');
+  new Product('Questionable Tentacle USB Drive', 'img/usb.gif', 'Tentacle USB');
+  new Product('Completely Useless Non-Watering Can', 'img/water-can.jpg', 'Watering Can');
+  new Product('"Why?"ne Glass', 'img/wine-glass.jpg', 'Wine Glass');
+}
 
 //setting number generator for inital 3 products
 var numGen1 = -1;
@@ -74,6 +80,7 @@ var numGen3 = -1;
 
 //function to return a percentage (so that diving 0/0 doesnt break everything)
 function percentReturn(shown, votes) {
+
   var percent = (votes / shown) * 100;
   if (isNaN(percent)) {
     return 0;
@@ -93,12 +100,12 @@ function renderResults() {
   totalVotes.innerText = Product.allVotes + 1; //I did this to show 25/25 at end
   var results = document.getElementById('topTitle');
   results.innerText = 'Results';
-  //this loop is what actually creates the final results elements
   var namesArray = [];
   var votesArray = [];
   var shownArray = [];
   var colorsArray = [];
 
+  //this loop is what actually creates the final results elements
   for (var i = 0; i < Product.allProducts.length; i++) {
     // also add numbers to the new array
     namesArray.push(Product.allProducts[i].shortName);
@@ -110,7 +117,7 @@ function renderResults() {
   var ctx = document.getElementById('votesChart').getContext('2d');
   var ctx2 = document.getElementById('shownChart').getContext('2d');
 
-  var myChart = new Chart(ctx, {
+  new Chart(ctx, {
     type: 'horizontalBar',
     data: {
       labels: namesArray,
@@ -120,7 +127,7 @@ function renderResults() {
         backgroundColor: Product.allColors,
         borderColor: 'rgb(0,0,0)',
         borderWidth: 1,
-      }]
+      }],
     },
     options: {
       scales: {
@@ -128,14 +135,14 @@ function renderResults() {
           ticks: {
             beginAtZero:true,
             suggestedMax: 10,
-            autoSkip: false
+            autoSkip: false,
           },
         }
-        ]
-      }
-    }
+        ],
+      },
+    },
   });
-  var myPieChart = new Chart(ctx2,{
+  new Chart(ctx2,{
     type: 'pie',
     // The data for our dataset
     data: {
@@ -145,12 +152,14 @@ function renderResults() {
         backgroundColor: Product.allColors,
         borderColor: 'rgb(0,0,0)',
         data: shownArray,
-      }]
+      }],
     },
 
     // Configuration options go here
-    options: {}
-});
+    options: {},
+  });
+
+  localStorage.setItem('products', JSON.stringify(Product.allProducts));
 }
 
 //big heavy function to run all new images and the results
