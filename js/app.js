@@ -9,7 +9,6 @@ function Product(name, filename, shortName, votes = 0, shown = 0) {
   this.votes = votes;
   this.shown = shown;
   Product.allProducts.push(this);
-  // this.color = randColor;
   Product.allColors.push(randColor());
 }
 
@@ -105,7 +104,7 @@ function renderResults() {
   var votesArray = [];
   var shownArray = [];
   var colorsArray = [];
-  
+
   //this loop is what actually creates the final results elements
   for (var i = 0; i < Product.allProducts.length; i++) {
     // also add numbers to the new array
@@ -118,7 +117,7 @@ function renderResults() {
   var ctx = document.getElementById('votesChart').getContext('2d');
   var ctx2 = document.getElementById('shownChart').getContext('2d');
 
-  var myChart = new Chart(ctx, {
+  new Chart(ctx, {
     type: 'horizontalBar',
     data: {
       labels: namesArray,
@@ -128,7 +127,7 @@ function renderResults() {
         backgroundColor: Product.allColors,
         borderColor: 'rgb(0,0,0)',
         borderWidth: 1,
-      }]
+      }],
     },
     options: {
       scales: {
@@ -136,14 +135,14 @@ function renderResults() {
           ticks: {
             beginAtZero:true,
             suggestedMax: 10,
-            autoSkip: false
+            autoSkip: false,
           },
         }
-        ]
-      }
-    }
+        ],
+      },
+    },
   });
-  var myPieChart = new Chart(ctx2,{
+  new Chart(ctx2,{
     type: 'pie',
     // The data for our dataset
     data: {
@@ -153,11 +152,11 @@ function renderResults() {
         backgroundColor: Product.allColors,
         borderColor: 'rgb(0,0,0)',
         data: shownArray,
-      }]
+      }],
     },
 
     // Configuration options go here
-    options: {}
+    options: {},
   });
 
   localStorage.setItem('products', JSON.stringify(Product.allProducts));
